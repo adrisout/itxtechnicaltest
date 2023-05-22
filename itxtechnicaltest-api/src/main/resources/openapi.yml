@@ -1,0 +1,151 @@
+openapi: 3.0.3
+info:
+  title: Prices API specification
+  description: Prices API specification
+  version: 1.0
+servers:
+  - url: http://localhost:8080/test
+tags:
+  - name: prices
+    description: Operations with prices
+paths:
+  /prices/price-by-product:
+    get:
+      tags:
+        - prices
+      summary: Get price info filtering by product, brand and application date
+      description: Get price info filtering by product, brand and application date
+      operationId: getPriceByProduct
+      parameters:
+        - $ref: '#/components/parameters/productId'
+        - $ref: '#/components/parameters/brandId'
+        - $ref: '#/components/parameters/applicationDate'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Price'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  -
+                    code: '400'
+                    description: 'Bad Request'
+                    level: 'ERROR'
+                    message: 'The field xxx must not be null'
+        405:
+          description: 'Method not allowed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - code: '405'
+                    description: 'Method not allowed'
+                    level: 'ERROR'
+                    message: 'Request method "POST" is not supported'
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  -
+                    code: '500'
+                    description: 'Internal Server Error'
+                    level: 'ERROR'
+                    message: 'Internal Server Error'
+components:
+  schemas:
+    Price:
+      type: object
+      additionalProperties: false
+      properties:
+        brandId:
+          type: integer
+          example: 3
+          minimum: 1
+          maximum: 2147483647
+        productId:
+          type: integer
+          example: 3
+          minimum: 1
+          maximum: 2147483647
+        priceList:
+          type: integer
+          example: 3
+          minimum: 1
+          maximum: 2147483647
+        startDate:
+          type: string
+          format: date-time
+          example: '2012-01-01T12:00:00Z'
+        endDate:
+          type: string
+          format: date-time
+          example: '2012-01-01T12:00:00Z'
+        productPrice:
+          type: number
+          format: double
+          example: 54.3
+        currency:
+          type: string
+          example: 'EUR'
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: '400'
+        description:
+          type: string
+          example: 'Bad Request'
+        level:
+          type: string
+          example: 'ERROR'
+        message:
+          type: string
+          example: 'Missing parameter'
+  parameters:
+    brandId:
+      description: Brand identifier
+      in: query
+      name: brandId
+      required: true
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 2147483647
+      example: 3
+    productId:
+      description: Product identifier
+      in: query
+      name: productId
+      required: true
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 2147483647
+      example: 3
+    applicationDate:
+      in: query
+      name: applicationDate
+      schema:
+        type: string
+        format: date-time
+        nullable: false
+        description: Date when the record is valid (yyyy-MM-dd'T'HH:mm:ssZ)
+        example: '2012-01-01T12:00:00Z'
+      required: true
