@@ -43,7 +43,7 @@ No dispone de ningún tipo de autenticación ni es necesario añadir ninguna var
 Para realizar alguna llamada y comprobar el correcto funcionamiento de este, podemos realizar llamadas con la siguiente URL, indicandole los valores que nosotros queramos:
 
 ```
-GET http://localhost:8080/test/prices?productId=35455&brandId=1&applicationDateTime=2020-06-15T16:00:00Z
+GET http://localhost:8080/test/prices/price-by-product?productId=35455&brandId=1&applicationDate=2020-06-15T16:00:00Z
 ```
 
 
