@@ -1,54 +1,64 @@
 
-# itxtechnicaltest
+# backenddevtest
 
-Este repositorio contiene una aplicación Spring Boot 3.0.6 en la que se realiza una implementación que cumple con los requisitos definidos en: [Ejercicio](docs/exercise.txt)
+This repository contains a Spring Boot 3.0.6 application in which an implementation of [this exercise](docs/exercise.md) has been done.
 
-Para la implementación se optó por utilizar Arquitectura Hexagonal con los siguientes módulos, siguiendo las recomendaciones de Inditex e intentando seguir CQRS y DDD:
-- **api:** implementa los puertos de entrada (en este caso servicio REST)
-- **application:** se definen los casos de uso
-- **boot:** es el módulo principal (contiene además los tests de integración)
-- **domain:** define la interfaz de la infraestructura
-- **infrastructure:** se implementan los puertos de salida
+For the implementation Hexagonal Architecture has been chosen with the following modules, following the recomendations of the Technology department of Inditex, and trying to follow CQRS and DDD patterns:
+- **api:** implements the input ports (in this case a REST service)
+- **application:** implementation of the use cases are made 
+- **boot:** main module (contains also integration tests)
+- **client:**: module where each client module is appended.
+- **domain:** interface of the use cases and the core of the architecture
+- **infrastructure:** output ports
 
-![hexagonal.png](docs/hexagonal.png)
+![hexagonal.png](assets/hexagonal.png)
 
-
-Las tecnologías utilizadas para ello, a grandes rasgos serían:
+The main technologies used for this project are:
 - **Java 17**
-- **OpenApi** para la definicion y generación de la API
-- **Mapstruct** para mapear objetos
-- **Lombok** para la generación automática de código
-- **H2** como Base de Datos en memoria
-- **Mockito** para tests
+- **OpenApi** definition and API generation (client and server)
+- **Mapstruct** mapping tasks between objects
+- **Lombok** automatic code generation
+- **Mockito** testing purposes
+- **Caffeine** for cache implementation
 
-## Instalación y ejecución
+## Installation and execution
 
-Para poder lanzar el servicio debemos de disponer de Java y Maven (versiones compatibles con Java 17). Personalmente he utilizado IntelliJ para el desarrollo, y ejecución.
+In order to launch the application we need to have Docker, Java and Maven installed (versions compatible with Java 17). In my case, I used IntelliJ for development.
 
-Para compilarlo haremos uso de
+To compile we can do the common clean install:
 ```bash
   mvn clean install
 ```
-
-Para lanzarlo utilizaremos:
+To launch de app we should first start Docker containers with the following command:
+```bash
+docker-compose up -d simulado influxdb grafana
+```
+After that we can launch it with this command:
 ```bash
   mvn spring-boot:run
 ```
 
-No dispone de ningún tipo de autenticación ni es necesario añadir ninguna variable de entorno.
+It isn't neccessary any form of authentication to make requests.
 
+## Use/Examples
 
-## Uso/Ejemplos
-
-Para realizar alguna llamada y comprobar el correcto funcionamiento de este, podemos realizar llamadas con la siguiente URL, indicandole los valores que nosotros queramos:
-
+To make any call we can take this as an example (all ports and context paths can be changed in application.yml file, application-test.yml for testing purposes)
 ```
-GET http://localhost:8080/test/prices/price-by-product?productId=35455&brandId=1&applicationDate=2020-06-15T16:00:00Z
+GET http://localhost:5000/test/product/1/similar
 ```
-
 
 # Tests
 
-Resultados de los tests de integración para los casos de prueba indicados en el ejercicio: 
+Integration tests done that ensures everything is working as expected (in addition to JUnit tests):
+![tests.png](assets/tests.png)
 
-![tests.png](docs/tests.png)
+
+# Additional comments
+
+Some configuration has been done to the rest client. Timeout of 5000ms has been set.
+
+A context path "/test" has been set.
+
+Also given OpenAPI specification has been modified so that it takes into account all errors returned by the service and its structure.
+
+Integration tests are run against the same mock for simplicity and it can be changed through configuration.
